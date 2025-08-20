@@ -73,7 +73,7 @@ jobs:
           file: ./Dockerfile
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          tags: registry.cn-zhangjiakou.aliyuncs.com/yuanyuexiang/timeflow:${{ needs.build-compile.outputs.formatted_timestamp }}
+          tags: registry.cn-zhangjiakou.aliyuncs.com/yuanyuexiang/strapi-5-22-0:${{ needs.build-compile.outputs.formatted_timestamp }}
           annotations: ${{ steps.meta.outputs.annotations }}
           provenance: true
           sbom: true
@@ -81,19 +81,19 @@ jobs:
   # 部署
   build-deploy:
     name: 部署
-    needs: [build-package, build-compile]
+    needs: [build-package]
     runs-on: ubuntu-latest
     container:
       image: registry.cn-zhangjiakou.aliyuncs.com/matrix-net/docker:26.1.4-dind-alpine3.20
       env:
-        DOCKER_IMAGE_TAG: registry.cn-zhangjiakou.aliyuncs.com/yuanyuexiang/timeflow:${{ needs.build-compile.outputs.formatted_timestamp }}
+        DOCKER_IMAGE_TAG: registry.cn-zhangjiakou.aliyuncs.com/yuanyuexiang/strapi-5-22-0:${{ needs.build-compile.outputs.formatted_timestamp }}
       ports:
         - 22
     steps:
       - uses: actions/download-artifact@v4
         with:
           name: agileconfig-ui
-          #path: Dockerfile timeflow
+          #path: Dockerfile strapi-5-22-0
 
       - name: 部署文件
         run: ls -al
