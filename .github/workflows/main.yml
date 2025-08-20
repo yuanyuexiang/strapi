@@ -47,8 +47,8 @@ jobs:
       # 使用时间戳
       - name: Print timestamp
         run: |
-          echo "Unix Timestamp: ${{ timestamp }}"
-          echo "Formatted Timestamp:  ${{ formatted_timestamp }}"
+          echo "Unix Timestamp: ${{ steps.get_timestamp.outputs.timestamp }}"
+          echo "Formatted Timestamp:  ${{ steps.get_timestamp.outputs.formatted_timestamp }}"
 
       - name: 指定仓库名称
         id: meta
@@ -73,7 +73,7 @@ jobs:
           file: ./Dockerfile
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          tags: registry.cn-zhangjiakou.aliyuncs.com/yuanyuexiang/strapi-5-22-0:${{ formatted_timestamp }}
+          tags: registry.cn-zhangjiakou.aliyuncs.com/yuanyuexiang/strapi-5-22-0:${{ steps.get_timestamp.outputs.formatted_timestamp }}
           annotations: ${{ steps.meta.outputs.annotations }}
           provenance: true
           sbom: true
