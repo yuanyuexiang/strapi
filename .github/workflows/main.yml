@@ -9,7 +9,6 @@ on:
 jobs:
   # 打包镜像
   build-package:
-    needs: build-compile
     name: 构建
     runs-on: ubuntu-latest
     container:
