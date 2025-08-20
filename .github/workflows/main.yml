@@ -2,22 +2,22 @@ name: 前端构建部署
  
 on:
   push:
-    branches: ["master--"]
+    branches: ["master"]
   pull_request:
-    branches: ["master--"]
+    branches: ["master"]
 
 jobs:
-  # 编译
-  build-compile:
-    name: 编译
+  # 打包镜像
+  build-package:
+    needs: build-compile
+    name: 构建
     runs-on: ubuntu-latest
     container:
-      image: registry.cn-zhangjiakou.aliyuncs.com/matrix-net/node-build:22.5.1
+      image: registry.cn-zhangjiakou.aliyuncs.com/matrix-net/docker:26.1.4-dind-alpine3.20
+      #env:
+        #DOCKER_HOST: tcp://0.0.0.0:2375
       ports:
         - 22
-      #volumes:
-      #  - my_docker_volume:/volume_mount
-      #options: --cpus 1
     outputs:
       timestamp: ${{ steps.get_timestamp.outputs.timestamp }}
       formatted_timestamp: ${{ steps.get_timestamp.outputs.formatted_timestamp }}
@@ -41,48 +41,9 @@ jobs:
           # 将时间戳导出为 GitHub Actions 输出变量
           echo "timestamp=$TIMESTAMP" >> $GITHUB_OUTPUT
           echo "formatted_timestamp=$FORMATTED_TIMESTAMP" >> $GITHUB_OUTPUT
-
-      # 构建项目
-      - name: 构建程序
-        #run: pwd & ls -l
-        run: |
-          #npm install pnpm -g
-          npm install
-          npm run build
- 
-      - name: 目录文件
-        run: ls -al
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: agileconfig-ui
-          include-hidden-files: true
-          path: |
-            Dockerfile
-            docker-compose.yaml
-            .next/static/
-            .next/standalone/
-            public/
-
-  # 打包镜像
-  build-package:
-    needs: build-compile
-    name: 构建
-    runs-on: ubuntu-latest
-    container:
-      image: registry.cn-zhangjiakou.aliyuncs.com/matrix-net/docker:26.1.4-dind-alpine3.20
-      #env:
-        #DOCKER_HOST: tcp://0.0.0.0:2375
-      ports:
-        - 22
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: agileconfig-ui
-          #path: Dockerfile timeflow
         
       - name: 目录文件
-        run: ls -al .next/standalone/node_modules/
+        run: ls -al
 
       # 使用时间戳
       - name: Print timestamp
@@ -94,7 +55,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ vars.DOCKER_USERNAME }}/timeflow
+          images: ${{ vars.DOCKER_USERNAME }}/strapi-5-22-0
 
       # 登录 Docker Hub
       - name: 登录 Docker Hub
