@@ -26,4 +26,4 @@ COPY --from=build /opt/app ./
 
 USER node
 EXPOSE 1337
-CMD ["npm", "run", "develop"]
+CMD ["npm", "run", "start"]

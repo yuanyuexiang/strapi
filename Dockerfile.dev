@@ -1,0 +1,14 @@
+FROM node:22-alpine
+
+# 装依赖
+RUN apk update && apk add --no-cache \
+  build-base gcc autoconf automake zlib-dev libpng-dev vips-dev git
+
+WORKDIR /opt/app
+
+# 复制依赖文件
+COPY package.json package-lock.json ./
+RUN npm install   # 开发环境需要 devDependencies
+
+# 挂载代码目录（docker-compose 会做）
+CMD ["npm", "run", "develop"]

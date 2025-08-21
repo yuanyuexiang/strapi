@@ -70,7 +70,7 @@ jobs:
       - name: 编译并推送 Docker image
         uses: docker/build-push-action@v6
         with:
-          file: ./Dockerfile
+          file: ./Dockerfile.dev
           context: .
           push: ${{ github.event_name != 'pull_request' }}
           tags: registry.cn-zhangjiakou.aliyuncs.com/yuanyuexiang/strapi-5-22-0:${{ steps.get_timestamp.outputs.formatted_timestamp }}
@@ -83,7 +83,7 @@ jobs:
           name: agileconfig-ui
           include-hidden-files: true
           path: |
-            Dockerfile
+            Dockerfile.dev
             docker-compose.yaml
 
   # 部署
@@ -101,7 +101,6 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: agileconfig-ui
-          #path: Dockerfile strapi-5-22-0
 
       - name: 部署文件
         run: ls -al
