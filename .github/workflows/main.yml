@@ -136,7 +136,7 @@ jobs:
           ssh-keyscan -H 117.72.204.201 >> /root/.ssh/known_hosts
 
           # 测试 SSH
-          ssh -vvv -o StrictHostKeyChecking=no root@117.72.204.201 echo "SSH connection successful"
+          #ssh -vvv -o StrictHostKeyChecking=no root@117.72.204.201 echo "SSH connection successful"
 
           # 创建 Docker Context
           docker context create remote --docker "host=ssh://remote-docker"
